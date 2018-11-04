@@ -12,7 +12,8 @@ namespace MyEncryptedMessagingTry
         {
             try
             {
-                _alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray(); // twice beacause of index-out-of-bounds exception
+                _alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray(); // three times beacause of index-out-of-bounds exception
+                //var alphabetSize = _alphabet.Length;
                 while (true)
                 {
                     Console.WriteLine("\nPress 1 for my example! \nPress 2 for your own message!\nFor exit press 0");
@@ -102,8 +103,7 @@ namespace MyEncryptedMessagingTry
             {
                 char[] stringArray = array.ToUpper().ToCharArray();
                 int i = 0;
-
-                //second way: through array
+                
                 foreach (char letter in stringArray)
                 {
                     if (Char.IsWhiteSpace(letter))
@@ -115,16 +115,9 @@ namespace MyEncryptedMessagingTry
                         int tempLetterNumber = letter; // letter as number in ASCII   
                         tempLetterNumber -= 65;
                         int tempInt = tempLetterNumber + number;
-                        stringArray[i++] = _alphabet[tempInt];
+                        stringArray[i++] = _alphabet[tempInt+26]; // without 26
                     }
                 }
-                //first way: through ASCII
-                //foreach (char letter in stringArray)
-                //{
-                //    int tempLetterNumber = letter; // letter as number in ASCII                    
-                //    char tempLetter = Convert.ToChar(tempLetterNumber + number);
-                //    stringArray[i++] = tempLetter;
-                //}
                 finalString = new string(stringArray);
             }
             catch (Exception e)
@@ -148,15 +141,9 @@ namespace MyEncryptedMessagingTry
                     }
                     else
                     {
-                        int tempLetterNumber = letter; // letter as number in ASCII                    
-                        
-                        //first way through ASCII
-                        //char tempLetter = Convert.ToChar(tempLetterNumber - number);
-                        //stringArray[i++] = tempLetter;
-                        
-                        // second way through array
-                        tempLetterNumber -= 65; // +
-                        int tempInt = tempLetterNumber - number;
+                        int tempLetterNumber = letter; // letter as number in ASCII
+                        tempLetterNumber -= 65;
+                        int tempInt = tempLetterNumber - number + 52;
                         stringArray[i++] = _alphabet[tempInt];
                     }
                 }
@@ -167,11 +154,6 @@ namespace MyEncryptedMessagingTry
                 Console.WriteLine(e);
             }
             return originalString;
-        }
-
-        public static void ConvertingThroughAlphabet()
-        {
-
         }
     }
 }

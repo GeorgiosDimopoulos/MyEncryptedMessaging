@@ -6,11 +6,13 @@ namespace MyEncryptedMessagingTry
     {
         protected static string madeText;
         protected static int firstResult, finalResult;
+        protected static char []_alphabet;
+
         static void Main()
         {
             try
             {
-                char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
+                _alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray(); // twice beacause of index-out-of-bounds exception
                 while (true)
                 {
                     Console.WriteLine("\nPress 1 for my example! \nPress 2 for your own message!\nFor exit press 0");
@@ -64,52 +66,106 @@ namespace MyEncryptedMessagingTry
 
         public static int ConvertingTime()
         {
-            // we separate the time in the hour and the minute
-            var nowHour = DateTime.Now.Hour;
-            var nowMinute = DateTime.Now.Minute;
-            Console.WriteLine("Time now: " + nowHour + ":" + nowMinute);
+            try
+            {
+                // we separate the time in the hour and the minute
+                var nowHour = DateTime.Now.Hour;
+                var nowMinute = DateTime.Now.Minute;
+                Console.WriteLine("Time now: " + nowHour + ":" + nowMinute);
 
-            // we separate the digits of the time, hour and minute each
-            int hourFirstDigit = nowHour / 10;
-            int hourSecondDigit = nowHour % 10;
-            int minuteFirstDigit = nowMinute / 10;
-            int minuteSecondDigit = nowMinute % 10;
+                // we separate the digits of the time, hour and minute each
+                int hourFirstDigit = nowHour / 10;
+                int hourSecondDigit = nowHour % 10;
+                int minuteFirstDigit = nowMinute / 10;
+                int minuteSecondDigit = nowMinute % 10;
 
-            Console.WriteLine("Result after separate the digits of time: " + hourFirstDigit + " " + hourSecondDigit + " : " + minuteFirstDigit + " " + minuteSecondDigit);
+                Console.WriteLine("Result after separate the digits of time: " + hourFirstDigit + " " + hourSecondDigit + " : " + minuteFirstDigit + " " + minuteSecondDigit);
 
-            firstResult = hourFirstDigit + hourSecondDigit + minuteFirstDigit + minuteSecondDigit;
-            Console.WriteLine("First sum of digits (all digits added): " + firstResult);
+                firstResult = hourFirstDigit + hourSecondDigit + minuteFirstDigit + minuteSecondDigit;
+                Console.WriteLine("First sum of digits (all digits added): " + firstResult);
 
-            int nowResultFirstDigit = firstResult / 10;
-            int nowResultSecondDigit = firstResult % 10;
-            finalResult = nowResultFirstDigit + nowResultSecondDigit;            
+                int nowResultFirstDigit = firstResult / 10;
+                int nowResultSecondDigit = firstResult % 10;
+                finalResult = nowResultFirstDigit + nowResultSecondDigit;                
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);                
+            }
             return finalResult;
         }
 
         public static string EncryptionProcess(string array,int number)
         {
-            char[] stringArray = array.ToCharArray();
-            int i = 0;
-            foreach (char letter in stringArray)
+            string finalString = null;
+            try
             {
-                int tempLetterNumber = letter; // letter as number in ASCII                    
-                char tempLetter = Convert.ToChar(tempLetterNumber + number);
-                stringArray[i++] = tempLetter;
+                char[] stringArray = array.ToUpper().ToCharArray();
+                int i = 0;
+
+                //second way: through array
+                foreach (char letter in stringArray)
+                {
+                    if (Char.IsWhiteSpace(letter))
+                    {
+                        stringArray[i++] = ' ';
+                    }
+                    else
+                    {
+                        int tempLetterNumber = letter; // letter as number in ASCII   
+                        tempLetterNumber -= 65;
+                        int tempInt = tempLetterNumber + number;
+                        stringArray[i++] = _alphabet[tempInt];
+                    }
+                }
+                //first way: through ASCII
+                //foreach (char letter in stringArray)
+                //{
+                //    int tempLetterNumber = letter; // letter as number in ASCII                    
+                //    char tempLetter = Convert.ToChar(tempLetterNumber + number);
+                //    stringArray[i++] = tempLetter;
+                //}
+                finalString = new string(stringArray);
             }
-            string finalString = new string(stringArray);
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
             return finalString;
         }
         public static string DecryptionProcess(string array, int number)
         {
-            char[] stringArray = array.ToCharArray();
-            int i = 0;
-            foreach (char letter in stringArray)
+            string originalString = null;
+            try
             {
-                int tempLetterNumber = letter; // letter as number in ASCII                    
-                char tempLetter = Convert.ToChar(tempLetterNumber - number);
-                stringArray[i++] = tempLetter;
+                char[] stringArray = array.ToCharArray();
+                int i = 0;
+                foreach (char letter in stringArray)
+                {
+                    if (Char.IsWhiteSpace(letter))
+                    {
+                        stringArray[i++] = ' ';
+                    }
+                    else
+                    {
+                        int tempLetterNumber = letter; // letter as number in ASCII                    
+                        
+                        //first way through ASCII
+                        //char tempLetter = Convert.ToChar(tempLetterNumber - number);
+                        //stringArray[i++] = tempLetter;
+                        
+                        // second way through array
+                        tempLetterNumber -= 65; // +
+                        int tempInt = tempLetterNumber - number;
+                        stringArray[i++] = _alphabet[tempInt];
+                    }
+                }
+                originalString = new string(stringArray);
             }
-            string originalString = new string(stringArray);
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
             return originalString;
         }
 
